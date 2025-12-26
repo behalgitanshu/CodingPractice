@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short Polling Example</title>
+</head>
+<body>
+    <h1>Short Polling Example</h1>
+    <button id="stop-polling">Stop Polling</button>
+    <div id="data-container"></div>
+
+    <script>
+        const dataContainer = document.getElementById('data-container');
+
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:5011/getData');
+                const data = await response.json();
+                dataContainer.innerText = JSON.stringify(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Poll every 2 seconds
+        const pollInterval = setInterval(fetchData, 2000);
+
+        // Initial fetch
+        fetchData();
+
+        // Stop polling on button click
+        document.getElementById('stop-polling').addEventListener('click', () => {
+            clearInterval(pollInterval);
+            console.log('Polling stopped.');
+        });
+    </script>
+
+</body>
+</html>

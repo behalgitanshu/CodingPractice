@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Polling Example</title>
+</head>
+<body>
+    <h1>Long Polling Example</h1>
+    <div id="data-container"></div>
+
+    <script>
+
+        const dataContainer = document.getElementById('data-container');
+
+        async function fetchData(lastData) {
+            try {
+                const response = await fetch(`http://localhost:5011/getData?lastData=${lastData}`);
+                const value = await response.json();
+                dataContainer.innerText = JSON.stringify(value.data);
+                // Immediately make another request after receiving data
+                await fetchData(value.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Retry after a delay in case of error
+                setTimeout(() => fetchData(lastData), 5000);
+            }
+        }
+
+        // Initial fetch
+        fetchData();
+    </script>
+</body>
+</html>
